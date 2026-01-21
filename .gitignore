@@ -1,0 +1,119 @@
+# ====================================================================
+# .gitignore - Mini Pipeline Local
+# ====================================================================
+# Files and directories to exclude from Git version control
+# ====================================================================
+
+# ====================================================================
+# SENSITIVE FILES (NEVER COMMIT)
+# ====================================================================
+.env
+*.env
+.env.local
+.env.*.local
+
+# ====================================================================
+# DATA FILES
+# ====================================================================
+# CSV files (can be large and should be downloaded separately)
+*.csv
+sales_data_sample.csv
+
+# Excel files
+*.xlsx
+*.xls
+
+# Database dumps
+*.sql.gz
+*.dump
+
+# ====================================================================
+# PYTHON
+# ====================================================================
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Unit test / coverage reports
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Jupyter Notebook (if any)
+.ipynb_checkpoints
+
+# ====================================================================
+# IDE / EDITORS
+# ====================================================================
+# VS Code
+.vscode/
+*.code-workspace
+
+# PyCharm
+.idea/
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# ====================================================================
+# OPERATING SYSTEM
+# ====================================================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# ====================================================================
+# LOGS
+# ====================================================================
+*.log
+logs/
+*.out
+
+# ====================================================================
+# TEMPORARY FILES
+# ====================================================================
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# ====================================================================
+# DATABASE
+# ====================================================================
+# PostgreSQL
+*.pgpass
+
+# SQLite (if used for testing)
+*.db
+*.sqlite
+*.sqlite3
+
+# ====================================================================
+# NOTES
+# ====================================================================
+# Remember to always check this file before committing
+# Sensitive data should NEVER be committed to version control
+# ====================================================================
