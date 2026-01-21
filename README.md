@@ -10,10 +10,6 @@ CSV crudo → Python (limpieza) → PostgreSQL (almacenamiento) → SQL (anális
 ```
 
 ---
-
-## DataSet
-link: "https://www.kaggle.com/datasets/kyanyoga/sample-sales-data"
-
 ## Problema de Negocio
 
 **Situación:** Una empresa retail necesita analizar sus transacciones de ventas históricas (2003-2005) para tomar decisiones informadas sobre:
@@ -205,7 +201,7 @@ CREATE INDEX idx_raw_sales_status ON raw_sales(status);
 ### **Paso 1: Clonar el Repositorio**
 
 ```bash
-git clone <tu-repositorio>
+git clone <Link_del_repositorio>
 cd mini_pipeline_local
 ```
 
