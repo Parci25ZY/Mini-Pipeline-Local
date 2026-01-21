@@ -411,5 +411,3 @@ Este es un proyecto educativo. Sugerencias y mejoras son bienvenidas vía Pull R
  
 **Analytics Engineer Portfolio Project**  
 Proyecto desarrollado para demostrar capacidades fundamentales de ingeniería de datos y análisis.
-
--
