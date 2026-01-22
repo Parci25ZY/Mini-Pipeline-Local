@@ -28,7 +28,7 @@ def clean_sales_data(df):
     Returns:
         pd.DataFrame: Cleaned dataframe ready for insertion
     """
-    print("🔧 Starting data cleaning...")
+    print("Starting data cleaning...")
     initial_rows = len(df)
     
     required_columns = [
@@ -39,7 +39,7 @@ def clean_sales_data(df):
     ]
     
     df = df[required_columns].copy()
-    print(f"   ✓ Selected {len(required_columns)} columns")
+    print(f"Selected {len(required_columns)} columns")
     
     column_mapping = {
         'ORDERNUMBER': 'order_number',
@@ -57,7 +57,7 @@ def clean_sales_data(df):
     }
     
     df.rename(columns=column_mapping, inplace=True)
-    print(f"   ✓ Renamed columns to snake_case")
+    print(f"Renamed columns to snake_case")
     
     def parse_date(date_str):
         """Parse multiple date formats."""
@@ -88,10 +88,10 @@ def clean_sales_data(df):
     # Eliminar filas con fechas inválidas
     date_nulls = df['order_date'].isna().sum()
     if date_nulls > 0:
-        print(f"   ⚠ Removed {date_nulls} rows with invalid dates")
+        print(f"Removed {date_nulls} rows with invalid dates")
         df = df[df['order_date'].notna()]
     
-    print(f"   ✓ Parsed dates successfully")
+    print(f"Parsed dates successfully")
 
     # Rellenar nulos en campos opcionales
     df['status'] = df['status'].fillna('Unknown')
@@ -109,7 +109,7 @@ def clean_sales_data(df):
     nulls_removed = nulls_before - len(df)
     
     if nulls_removed > 0:
-        print(f"   ⚠ Removed {nulls_removed} rows with nulls in critical fields")
+        print(f"Removed {nulls_removed} rows with nulls in critical fields")
     
     print(f"   ✓ Handled missing values")
     
@@ -129,21 +129,21 @@ def clean_sales_data(df):
     df = df[df['unit_price'] >= 0]
     df = df[df['total_amount'] >= 0]
     
-    print(f"   ✓ Converted and validated data types")
+    print(f"Converted and validated data types")
     
     duplicates_before = len(df)
     df = df.drop_duplicates(subset=['order_number', 'order_line_number'], keep='first')
     duplicates_removed = duplicates_before - len(df)
     
     if duplicates_removed > 0:
-        print(f"   ⚠ Removed {duplicates_removed} duplicate rows")
+        print(f"Removed {duplicates_removed} duplicate rows")
     
-    print(f"   ✓ Removed duplicates")
+    print(f"Removed duplicates")
     
     final_rows = len(df)
     rows_removed = initial_rows - final_rows
     
-    print(f"\n📊 Cleaning Summary:")
+    print(f"Cleaning Summary:")
     print(f"   Initial rows: {initial_rows}")
     print(f"   Final rows: {final_rows}")
     print(f"   Rows removed: {rows_removed} ({rows_removed/initial_rows*100:.1f}%)")
@@ -162,12 +162,12 @@ def connect_to_database():
         psycopg2.connection: Database connection object
     """
     try:
-        print("🔌 Connecting to PostgreSQL...")
+        print("Connecting to PostgreSQL...")
         conn = psycopg2.connect(**DB_CONFIG)
-        print("   ✓ Connected successfully")
+        print("Connected successfully")
         return conn
     except psycopg2.Error as e:
-        print(f"   ✗ Connection failed: {e}")
+        print(f"Connection failed: {e}")
         sys.exit(1)
 
 
@@ -179,7 +179,7 @@ def insert_data(conn, df):
         conn: PostgreSQL connection object
         df (pd.DataFrame): Cleaned dataframe
     """
-    print(f"\n📥 Inserting {len(df)} rows into database...")
+    print(f"Inserting {len(df)} rows into database...")
     
     cursor = conn.cursor()
     
@@ -224,12 +224,12 @@ def insert_data(conn, df):
         cursor.execute("SELECT COUNT(*) FROM raw_sales;")
         total_rows = cursor.fetchone()[0]
         
-        print(f"   ✓ Insertion completed successfully")
-        print(f"   ✓ Total rows in table: {total_rows}")
+        print(f"Insertion completed successfully")
+        print(f"Total rows in table: {total_rows}")
         
     except psycopg2.Error as e:
         conn.rollback()
-        print(f"   ✗ Insertion failed: {e}")
+        print(f"Insertion failed: {e}")
         raise
     finally:
         cursor.close()
@@ -241,14 +241,14 @@ def get_table_stats(conn):
     Args:
         conn: PostgreSQL connection object
     """
-    print(f"\n📊 Database Statistics:")
+    print(f"Database Statistics:")
     
     cursor = conn.cursor()
     
     # Query 1: Total records
     cursor.execute("SELECT COUNT(*) FROM raw_sales;")
     total_records = cursor.fetchone()[0]
-    print(f"   Total records: {total_records}")
+    print(f"Total records: {total_records}")
     
     # Query 2: Date range
     cursor.execute("""
@@ -258,12 +258,12 @@ def get_table_stats(conn):
         FROM raw_sales;
     """)
     date_range = cursor.fetchone()
-    print(f"   Date range: {date_range[0]} to {date_range[1]}")
+    print(f"Date range: {date_range[0]} to {date_range[1]}")
     
     # Query 3: Total sales amount
     cursor.execute("SELECT SUM(total_amount) FROM raw_sales;")
     total_sales = cursor.fetchone()[0]
-    print(f"   Total sales: ${total_sales:,.2f}")
+    print(f"Total sales: ${total_sales:,.2f}")
     
     # Query 4: Unique customers
     cursor.execute("SELECT COUNT(DISTINCT customer_name) FROM raw_sales;")
@@ -273,7 +273,57 @@ def get_table_stats(conn):
     # Query 5: Product lines
     cursor.execute("SELECT COUNT(DISTINCT product_line) FROM raw_sales;")
     product_lines = cursor.fetchone()[0]
-    print(f"   Product lines: {product_lines}")
+    print(f"Product lines: {product_lines}")
     
     cursor.close()
 
+
+def main():
+    """
+    Main function to orchestrate the data pipeline.
+    Reads CSV, cleans data, inserts into database, and displays stats.
+    """
+    print("=" * 60)
+    print("Starting Sales Data Ingestion Pipeline")
+    print("=" * 60)
+    
+    # Step 1: Read the CSV file
+    csv_file = "sales_data_sample.csv"
+    print(f"\n[1/4] Reading CSV file: {csv_file}")
+    
+    try:
+        df = pd.read_csv(csv_file, encoding='latin-1')
+        print(f"Loaded {len(df)} rows from CSV")
+    except FileNotFoundError:
+        print(f"Error: File '{csv_file}' not found")
+        sys.exit(1)
+    except Exception as e:
+        print(f"Error reading CSV: {e}")
+        sys.exit(1)
+    
+    # Step 2: Clean the data
+    print(f"\n[2/4] Cleaning data...")
+    df_clean = clean_sales_data(df)
+    
+    # Step 3: Connect and insert data
+    print(f"\n[3/4] Inserting data into database...")
+    conn = connect_to_database()
+    
+    try:
+        insert_data(conn, df_clean)
+        
+        # Step 4: Display statistics
+        print(f"\n[4/4] Retrieving database statistics...")
+        get_table_stats(conn)
+        
+    finally:
+        conn.close()
+        print("\nDatabase connection closed")
+    
+    print("\n" + "=" * 60)
+    print("Pipeline completed successfully!")
+    print("=" * 60)
+
+
+if __name__ == "__main__":
+    main()
