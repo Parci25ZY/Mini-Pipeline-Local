@@ -111,7 +111,7 @@ def clean_sales_data(df):
     if nulls_removed > 0:
         print(f"Removed {nulls_removed} rows with nulls in critical fields")
     
-    print(f"   ✓ Handled missing values")
+    print(f"Handled missing values")
     
     # Convertir tipos numéricos
     df['order_number'] = pd.to_numeric(df['order_number'], errors='coerce').astype('Int64')
